@@ -3,10 +3,9 @@ import joblib
 import pandas as pd
 import numpy as np
 from flask import Flask, request, jsonify
-from prometheus_client import start_http_server, Counter, Histogram, Gauge
+from prometheus_client import start_http_server, Counter, Histogram
 import time
 import logging
-from sklearn.preprocessing import LabelEncoder
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -20,7 +19,9 @@ PREDICTION_LATENCY = Histogram('prediction_latency_seconds', 'Prediction latency
 # Load model dan scaler
 model = None
 scaler = None
-label_encoders = {}
+
+# FITUR YANG BENAR (7 fitur dari titanic_preprocessing.csv)
+FEATURES = ['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked']
 
 def load_model():
     global model, scaler
@@ -33,61 +34,44 @@ def load_model():
         logger.error(f"❌ Error: {e}")
         return False
 
-def encode_features(df):
-    """Encode categorical features like in training"""
-    # Encode Name (ambil title atau hash)
-    df['Name'] = df['Name'].apply(lambda x: hash(x) % 1000)
-    
-    # Encode Ticket
-    df['Ticket'] = df['Ticket'].apply(lambda x: hash(x) % 1000)
-    
-    return df
-
 app = Flask(__name__)
 
 @app.route('/predict', methods=['POST'])
 def predict():
     if model is None or scaler is None:
         return jsonify({'error': 'Model not loaded'}), 500
-    
+
     try:
         start_time = time.time()
         data = request.json
-        
-        # Buat dataframe dengan 11 fitur
+
+        # Buat dataframe dengan 7 fitur yang benar
         features = pd.DataFrame({
-            'PassengerId': [data.get('PassengerId', 1)],
             'Pclass': [data.get('Pclass', 3)],
-            'Name': [data.get('Name', 'John Doe')],
             'Sex': [data.get('Sex', 0)],
             'Age': [data.get('Age', 22)],
             'SibSp': [data.get('SibSp', 0)],
             'Parch': [data.get('Parch', 0)],
-            'Ticket': [data.get('Ticket', '12345')],
             'Fare': [data.get('Fare', 7.25)],
-            'Cabin': [data.get('Cabin', 0)],
             'Embarked': [data.get('Embarked', 0)]
         })
-        
-        # Encode categorical features
-        features = encode_features(features)
-        
+
         # Scale features
         features_scaled = scaler.transform(features)
-        
+
         # Predict
         prediction = model.predict(features_scaled)
         probability = model.predict_proba(features_scaled)
-        
+
         PREDICTION_COUNT.inc()
         PREDICTION_LATENCY.observe(time.time() - start_time)
-        
+
         return jsonify({
             'prediction': int(prediction[0]),
             'probability_survived': float(probability[0][1]),
             'probability_died': float(probability[0][0])
         })
-        
+
     except Exception as e:
         PREDICTION_ERRORS.inc()
         logger.error(f"Error: {e}")
@@ -98,16 +82,16 @@ def health():
     return jsonify({'status': 'healthy'})
 
 def run_prometheus():
-    start_http_server(8000)
-    logger.info("✅ Prometheus metrics on port 8000")
+    start_http_server(8001)
+    logger.info("✅ Prometheus metrics on port 8001")
 
 if __name__ == "__main__":
     print("🚀 Starting Inference Server...")
-    
+
     if not load_model():
         print("❌ Failed to load model")
         exit(1)
-    
+
     run_prometheus()
-    print("🌐 Flask server on http://localhost:5001")
-    app.run(host='0.0.0.0', port=5001, debug=False)
+    print("🌐 Flask server on http://localhost:5003")
+    app.run(host='0.0.0.0', port=5003, debug=False)
