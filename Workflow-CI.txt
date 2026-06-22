@@ -1,1 +1,1 @@
-https://github.com/imanrohiman/Eksperimen_SML_Iman_Rohiman/blob/main/.github/workflows/ci.yml
+https://github.com/imanrohiman/workflow-ci-imanrohiman
