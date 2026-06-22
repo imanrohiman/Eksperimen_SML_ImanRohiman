@@ -1,0 +1,15 @@
+artifact_uri: file:///home/iman/Eksperimen_SML_ImanRohiman/Membangun_model/mlruns/685649157302216494/e1069d4bf3324502b3a48d85c6030f77/artifacts
+end_time: 1782125182909
+entry_point_name: ''
+experiment_id: '685649157302216494'
+lifecycle_stage: active
+run_id: e1069d4bf3324502b3a48d85c6030f77
+run_name: able-hen-131
+run_uuid: e1069d4bf3324502b3a48d85c6030f77
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1782125179029
+status: 3
+tags: []
+user_id: iman

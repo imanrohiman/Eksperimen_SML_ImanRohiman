@@ -13,7 +13,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 def load_and_preprocess_data():
-    df = pd.read_csv('titanic_preprocessing.csv')
+    df = pd.read_csv('titanic.csv')
 
     X = df.drop('Survived', axis=1)
     y = df['Survived']
