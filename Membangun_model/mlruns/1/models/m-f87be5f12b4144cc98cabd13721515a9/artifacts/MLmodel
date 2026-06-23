@@ -1,0 +1,23 @@
+artifact_path: /home/iman/Eksperimen_SML_ImanRohiman/Membangun_model/mlruns/1/models/m-f87be5f12b4144cc98cabd13721515a9/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.skops
+    predict_fn: predict
+    python_version: 3.12.3
+  sklearn:
+    code: null
+    pickled_model: model.skops
+    serialization_format: skops
+    sklearn_version: 1.9.0
+    skops_trusted_types: null
+mlflow_version: 3.14.0
+model_id: m-f87be5f12b4144cc98cabd13721515a9
+model_size_bytes: 3266749
+model_uuid: m-f87be5f12b4144cc98cabd13721515a9
+prompts: null
+run_id: 39097cb6ba6c42ae9053a5d8cef8b062
+utc_time_created: '2026-06-23 04:43:18.839454'
