@@ -12,6 +12,8 @@ import warnings
 
 warnings.filterwarnings('ignore')
 
+mlflow.autolog() 
+
 def load_and_preprocess_data():
     df = pd.read_csv('namadataset_preprocessing/titanic_preprocessing.csv')
 
